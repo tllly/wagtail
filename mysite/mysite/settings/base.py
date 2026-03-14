@@ -26,6 +26,7 @@ BASE_DIR = PROJECT_DIR.parent
 INSTALLED_APPS = [
     "base.apps.BaseConfig",
     "blog",
+    "products.apps.ProductsConfig",
     "home",
     "search",
     "wagtail.contrib.forms",

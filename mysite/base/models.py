@@ -3,6 +3,7 @@ from wagtail.admin.panels import (
     FieldPanel,
     MultiFieldPanel,
     PublishingPanel,
+    InlinePanel,
 )
 from wagtail.fields import RichTextField
 
@@ -22,19 +23,57 @@ from wagtail.snippets.models import register_snippet
 
 @register_setting
 class NavigationSettings(BaseGenericSetting):
+    whatsapp = models.CharField(max_length=255, help_text="WhatsApp number (e.g., 86138...)", blank=True)
     linkedin_url = models.URLField(verbose_name="LinkedIn URL", blank=True)
-    github_url = models.URLField(verbose_name="GitHub URL", blank=True)
-    mastodon_url = models.URLField(verbose_name="Mastodon URL", blank=True)
+    facebook_url = models.URLField(verbose_name="Facebook URL", blank=True)
+    email = models.EmailField(blank=True)
 
     panels = [
         MultiFieldPanel(
             [
+                FieldPanel("whatsapp"),
                 FieldPanel("linkedin_url"),
-                FieldPanel("github_url"),
-                FieldPanel("mastodon_url"),
+                FieldPanel("facebook_url"),
+                FieldPanel("email"),
             ],
-            "Social settings",
+            "Global Contact Settings",
         )
+    ]
+
+@register_snippet
+class Certificate(models.Model):
+    name = models.CharField(max_length=255)
+    image = models.ForeignKey(
+        'wagtailimages.Image', on_delete=models.CASCADE, related_name='+'
+    )
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("image"),
+    ]
+
+    def __str__(self):
+        return self.name
+
+from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
+from modelcluster.fields import ParentalKey
+
+class FormField(AbstractFormField):
+    page = ParentalKey('InquiryPage', on_delete=models.CASCADE, related_name='form_fields')
+
+class InquiryPage(AbstractEmailForm):
+    intro = RichTextField(blank=True)
+    thank_you_text = RichTextField(blank=True)
+
+    content_panels = AbstractEmailForm.content_panels + [
+        FieldPanel('intro'),
+        InlinePanel('form_fields', label="Form fields"),
+        FieldPanel('thank_you_text'),
+        MultiFieldPanel([
+            FieldPanel('from_address'),
+            FieldPanel('to_address'),
+            FieldPanel('subject'),
+        ], "Email Notification Config"),
     ]
 
 @register_snippet
