@@ -2,18 +2,21 @@
 <footer>
     <p>Built with Wagtail</p>
 
-    {% with linkedin_url=settings.base.NavigationSettings.linkedin_url github_url=settings.base.NavigationSettings.github_url mastodon_url=settings.base.NavigationSettings.mastodon_url %}
-        {% if linkedin_url or github_url or mastodon_url %}
+    {% with settings=settings.base.NavigationSettings %}
+        {% if settings.whatsapp or settings.linkedin_url or settings.facebook_url or settings.email %}
             <p>
-                Follow me on:
-                {% if github_url %}
-                    <a href="{{ github_url }}">GitHub</a>
+                <strong>Contact Us:</strong>
+                {% if settings.whatsapp %}
+                    <a href="https://wa.me/{{ settings.whatsapp }}" target="_blank">WhatsApp</a> |
                 {% endif %}
-                {% if linkedin_url %}
-                    <a href="{{ linkedin_url }}">LinkedIn</a>
+                {% if settings.email %}
+                    <a href="mailto:{{ settings.email }}">Email</a> |
                 {% endif %}
-                {% if mastodon_url %}
-                    <a href="{{ mastodon_url }}">Mastodon</a>
+                {% if settings.linkedin_url %}
+                    <a href="{{ settings.linkedin_url }}" target="_blank">LinkedIn</a> |
+                {% endif %}
+                {% if settings.facebook_url %}
+                    <a href="{{ settings.facebook_url }}" target="_blank">Facebook</a>
                 {% endif %}
             </p>
         {% endif %}

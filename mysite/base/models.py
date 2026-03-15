@@ -8,11 +8,22 @@ from wagtail.admin.panels import (
 from wagtail.fields import RichTextField
 
 from wagtail.models import (
+    Page,
     DraftStateMixin,
     PreviewableMixin,
     RevisionMixin,
     TranslatableMixin,
 )
+
+class AboutPage(Page):
+    body = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('body'),
+    ]
+
+    class Meta:
+        verbose_name = "About Us Page"
 
 from wagtail.contrib.settings.models import (
     BaseGenericSetting,
